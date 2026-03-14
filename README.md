@@ -20,7 +20,7 @@ This is the backend for a **HR & Payroll Management System** built with Django. 
 ## Installation
 1. Clone the repository:
 ```bash
-git clone https://github.com/DanielMbe/hr-payroll-backend.git
+git clone https://github.com/DanielMbe/HR-Payroll-Management-System-Django-SaaS-MVP
 python -m venv venv
 source venv/bin/activate  # Linux/macOS
 venv\Scripts\activate     # Windows
