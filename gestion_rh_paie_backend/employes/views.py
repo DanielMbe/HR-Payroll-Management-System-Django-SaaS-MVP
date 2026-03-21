@@ -3,8 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 from rest_framework.exceptions import PermissionDenied
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate
 from django.shortcuts import get_object_or_404
 from employes.models import (Employe, RoleUtilisateur)
 from employes.serializers import EmployeSerializer, EmployeUpdateSerializer
@@ -56,10 +57,19 @@ class LoginView(APIView):
 
 class LogoutView(APIView):
     permission_classes = [permissions.IsAuthenticated]
-    
+
     def post(self, request):
-        logout(request)
-        return Response({"message": "Logged out"})
+        refresh_token = request.data.get("refresh")
+        
+        if not refresh_token:
+            return Response({"error": "Refresh token required"}, status=400)
+
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({"loggedOut": True}, status=200)
+        except (TokenError, InvalidToken) as e:
+            return Response({"error": str(e)}, status=400)
     
 
 class EmployeView(APIView):
